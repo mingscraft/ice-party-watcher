@@ -18,7 +18,7 @@ jobs:
 
   publish-latest:
     environment:
-      IMAGE_NAME: building-on-ci
+      IMAGE_NAME: ice-party-watcher
     docker:
       - image: circleci/buildpack-deps:stretch
     steps:
