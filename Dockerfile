@@ -2,6 +2,7 @@
 FROM rust:1.64.0-alpine3.15 as builder
 
 RUN apk add --no-cache musl-dev
+RUN apk add libssl-dev pkg-config
 
 # Create a new empty shell project
 RUN USER=root cargo new --bin ice-party-watcher
