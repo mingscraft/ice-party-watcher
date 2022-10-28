@@ -6,8 +6,8 @@ RUN apk add --no-cache libressl-dev
 RUN apk add --no-cache pkgconfig
 
 # Create a new empty shell project
-RUN USER=root cargo new --bin ice-party-watcher
-WORKDIR /ice-party-watcher
+RUN USER=root cargo new --bin ice-party-watch
+WORKDIR /ice-party-watch
 
 # Copy our manifests
 COPY ./Cargo.toml ./Cargo.toml
@@ -16,7 +16,8 @@ COPY ./Cargo.lock ./Cargo.lock
 # Build only the dependencies to cache them
 RUN cargo build --release
 RUN rm ./src/*.rs
-RUN rm ./target/release/deps/ice_party_watcher*
+RUN rm ./target/release/deps/ice_party_watch*
+
 
 # Copy the source code
 COPY ./src ./src
@@ -29,7 +30,7 @@ RUN cargo build --release
 
 # The final base image
 FROM scratch
-WORKDIR /ice-party-watcher 
-COPY --from=builder /ice-party-watcher/target/release/ice-party-watcher /ice-party-watcher/ice-party-watcher
+WORKDIR /ice-party-watch 
+COPY --from=builder /ice-party-watch/target/release/ice-party-watch /ice-party-watch/ice-party-watch
 
-CMD ["./ice-party-watcher"]
+CMD ["./ice-party-watch"]
