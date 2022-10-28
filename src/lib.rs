@@ -16,8 +16,12 @@ pub mod public_ip_resolver;
 
 #[derive(Error, Debug)]
 pub enum DnsServerUpdatorError {
-    #[error("{0}")]
-    Other(String),
+    #[error(transparent)]
+    FailedToSend(anyhow::Error),
+    #[error(transparent)]
+    ErrorResponse(anyhow::Error),
+    #[error(transparent)]
+    Other(anyhow::Error),
 }
 
 /// Trait that provide utilities for dynamic IP updating.
@@ -82,28 +86,34 @@ where
     }
 
     /// Run Watcher to keep ip up to date in DNS server
-    pub async fn run(&self) -> Result<(), IcePartyWatcherError> {
+    pub async fn run(&mut self) -> Result<(), IcePartyWatcherError> {
         let mut interval = time::interval(self.cadence);
         loop {
-            self.sync_ip().await?;
             interval.tick().await;
+            self.sync_ip().await?;
         }
     }
 
     /// Sync IP with DNS Server
-    async fn sync_ip(&self) -> Result<(), IcePartyWatcherError> {
+    async fn sync_ip(&mut self) -> Result<(), IcePartyWatcherError> {
         let current_ip = self
             .ip_fetcher
             .current_ip()
             .await
             .map_err(|e| IcePartyWatcherError::FailToFetchIp(e))?;
+        tracing::info!("current ip is: {}", current_ip);
 
         if self.should_update(current_ip) {
+            tracing::info!("updating recored: no reconciliation record or ip record outdated");
             self.dns_server
                 .update_ip_in_dns(current_ip)
                 .await
                 .map_err(IcePartyWatcherError::FailToUpdateDns)?;
+            self.ip_in_dns = Some(current_ip);
+        } else {
+            tracing::info!("record up to date");
         }
+        tracing::info!("reconciliation finish");
         Ok(())
     }
 

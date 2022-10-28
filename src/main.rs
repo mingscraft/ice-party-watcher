@@ -2,7 +2,9 @@ use ice_party_watch::cloud_dns::CloudDns;
 use ice_party_watch::public_ip_resolver::PublicIpResolver;
 use ice_party_watch::IcePartyWatcher;
 use std::env;
+use std::time::Duration;
 use tracing_bunyan_formatter::{BunyanFormattingLayer, JsonStorageLayer};
+use tracing_subscriber::filter::EnvFilter;
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::Registry;
 
@@ -23,11 +25,12 @@ impl TryFrom<&str> for DnsType {
 
 #[tokio::main]
 async fn main() {
-    let formatting_layer = BunyanFormattingLayer::new("tracing_demo".into(), std::io::stdout);
+    let formatting_layer = BunyanFormattingLayer::new("ice-party-watcher".into(), std::io::stdout);
     let subscriber = Registry::default()
+        .with(EnvFilter::from_default_env())
         .with(JsonStorageLayer)
         .with(formatting_layer);
-    tracing::subscriber::set_global_default(subscriber).unwrap();
+    tracing::subscriber::set_global_default(subscriber).expect("failed to set tracing subscriber");
     match start().await {
         Ok(_) => {}
         Err(err) => {
@@ -50,13 +53,57 @@ async fn start() -> anyhow::Result<()> {
         .try_into()
         .map_err(|e: String| anyhow::anyhow!(e))?;
 
+    let cadence = match env::var("CADENCE") {
+        Ok(val) => {
+            let val = u64::from_str_radix(&val, 10)?;
+            Some(Duration::from_secs(val))
+        }
+        Err(_) => None,
+    };
+
+    let record_name = match env::var("RECORD_NAME") {
+        Ok(val) => val,
+        Err(_) => {
+            return Err(anyhow::anyhow!(
+                "RECORD_NAME not set. RECORD_NAME=<Managed Zone>"
+            ));
+        }
+    };
+
     let dns = match dns_type {
-        DnsType::CloudDns => CloudDns::new(),
+        DnsType::CloudDns => {
+            let key_id = match env::var("CRED_ID") {
+                Ok(val) => val,
+                Err(_) => {
+                    return Err(anyhow::anyhow!("CRED_ID not set. CRED_ID=<Credential ID>"));
+                }
+            };
+
+            let managed_zone = match env::var("MANAGED_ZONE") {
+                Ok(val) => val,
+                Err(_) => {
+                    return Err(anyhow::anyhow!(
+                        "MANAGED_ZONE not set. MANAGED_ZONE=<Managed Zone>"
+                    ));
+                }
+            };
+
+            match env::var("GOOGLE_APPLICATION_CREDENTIALS") {
+                Ok(_) => {}
+                Err(_) => {
+                    return Err(anyhow::anyhow!(
+                        "GOOGLE_APPLICATION_CREDENTIALS not set. GOOGLE_APPLICATION_CREDENTIALS=<file path of the credential>"
+                    ));
+                }
+            };
+
+            CloudDns::new(key_id.into(), managed_zone.into(), record_name.into()).await?
+        }
     };
 
     let ip_fetcher = PublicIpResolver::new();
 
-    let watcher = IcePartyWatcher::new(ip_fetcher, dns, None);
+    let mut watcher = IcePartyWatcher::new(ip_fetcher, dns, cadence);
 
     watcher.run().await?;
 
