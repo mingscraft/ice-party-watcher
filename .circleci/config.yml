@@ -6,7 +6,7 @@ jobs:
     docker:
       - image: cimg/node:14.17.3
         auth:
-          username: mydockerhub-user
+          username: $DOCKERHUB_USERNAME 
           password: $DOCKERHUB_PASSWORD
     steps:
       - checkout
@@ -20,9 +20,14 @@ jobs:
     environment:
       IMAGE_NAME: ice-party-watcher
     docker:
-      - image: circleci/buildpack-deps:stretch
+      - image: cimg/node:14.17.3
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD
     steps:
       - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
           name: Publish Docker Image to Docker Hub
           command: |
