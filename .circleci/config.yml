@@ -18,7 +18,9 @@ jobs:
 
       - run:
           name: Publish Docker image
-          command: docker push $IMAGE_NAME:latest 
+          command: |
+            docker login 
+            docker push $IMAGE_NAME:latest 
 
 workflows:
   version: 2
