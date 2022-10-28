@@ -4,10 +4,14 @@ jobs:
     environment:
       IMAGE_NAME: ice-party-watcher
     docker:
-      - image: circleci/buildpack-deps:stretch
+      - image: cimg/node:14.17.3
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD
     steps:
       - checkout
       - setup_remote_docker
+          docker_layer_caching: true
       - run:
           name: Build Docker image
           command: docker build -t $IMAGE_NAME:latest .

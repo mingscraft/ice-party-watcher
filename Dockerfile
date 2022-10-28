@@ -16,7 +16,7 @@ COPY ./Cargo.lock ./Cargo.lock
 # Build only the dependencies to cache them
 RUN cargo build --release
 RUN rm ./src/*.rs
-RUN rm ./target/release/deps/ice-party-watcher*
+RUN rm ./target/release/deps/ice_party_watcher*
 
 # Copy the source code
 COPY ./src ./src
@@ -28,10 +28,8 @@ RUN apk add --update openssl && \
 RUN cargo build --release
 
 # The final base image
-FROM debian:buster-slim
-
 FROM scratch
-WORKDIR /godaddy-dynamic-ip
+WORKDIR /ice-party-watcher 
 COPY --from=builder /ice-party-watcher/target/release/ice-party-watcher /ice-party-watcher/ice-party-watcher
 
 CMD ["./ice-party-watcher"]
