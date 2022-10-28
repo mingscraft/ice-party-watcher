@@ -1,5 +1,5 @@
 # Rust as the base image
-FROM rust:1.64.0-alpine3.15 as builder
+FROM rust:1.64.0-alpine as builder
 
 RUN apk add --no-cache musl-dev
 RUN apk add --no-cache libressl-dev
