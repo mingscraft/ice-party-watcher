@@ -29,6 +29,8 @@ RUN apk add --update openssl && \
 RUN cargo build --release
 
 # The final base image
+FROM debian:buster-slim
+
 FROM scratch
 WORKDIR /ice-party-watch 
 COPY --from=builder /ice-party-watch/target/release/ice-party-watch /ice-party-watch/ice-party-watch
