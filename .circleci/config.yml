@@ -14,24 +14,8 @@ jobs:
           docker_layer_caching: true
       - run:
           name: Build Docker image
-          command: docker build -t $IMAGE_NAME:latest .
-
-  publish-latest:
-    environment:
-      IMAGE_NAME: ice-party-watcher
-    docker:
-      - image: cimg/node:14.17.3
-        auth:
-          username: mydockerhub-user
-          password: $DOCKERHUB_PASSWORD
-    steps:
-      - setup_remote_docker
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: Publish Docker Image to Docker Hub
           command: |
-            echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+            docker build -t $IMAGE_NAME:latest .
             docker push $IMAGE_NAME:latest
 
 workflows:
@@ -39,13 +23,6 @@ workflows:
   build-main:
     jobs:
       - build:
-          filters:
-            branches:
-              only: main
-
-      - publish-latest:
-          requires:
-            - build
           filters:
             branches:
               only: main
