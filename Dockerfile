@@ -8,6 +8,7 @@ RUN rustup target add armv7-unknown-linux-musleabihf
 RUN apk add --no-cache binutils-arm-none-eabi gcc-arm-none-eabi 
 RUN cargo install cross
 RUN ln -s /usr/bin/arm-linux-gnueabihf-gcc /usr/bin/arm-linux-musleabihf-gcc
+RUN ln -s /usr/bin/arm-linux-gnueabihf-musl-gcc /usr/bin/arm-linux-musleabihf-gcc
 
 # Create a new empty shell project
 RUN USER=root cargo new --bin ice-party-watch
