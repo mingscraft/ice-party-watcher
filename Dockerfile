@@ -1,6 +1,7 @@
 # Rust as the base image
 FROM rust:1.64.0-alpine as builder
 
+RUN apk add --update docker openrc
 RUN apk add --no-cache musl-dev
 RUN apk add --no-cache libressl-dev
 RUN apk add --no-cache pkgconfig
