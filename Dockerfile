@@ -27,7 +27,7 @@ COPY ./Cargo.lock ./Cargo.lock
 COPY ./.cargo ./.cargo
 
 # Build only the dependencies to cache them
-RUN CC=arm-linux-gnueabihf-gcc cargo build --release --target armv7-unknown-linux-musleabihf
+RUN cross build --release --target armv7-unknown-linux-musleabihf
 RUN rm ./src/*.rs
 RUN rm ./target/release/deps/ice_party_watch*
 
@@ -39,7 +39,7 @@ COPY ./src ./src
 RUN apk add --update openssl && \
     rm -rf /var/cache/apk/*
 
-RUN CC=arm-linux-gnueabihf-gcc cargo build --release --target armv7-unknown-linux-musleabihf
+RUN cross build --release --target armv7-unknown-linux-musleabihf
 
 FROM scratch
 WORKDIR /ice-party-watch 
