@@ -5,7 +5,7 @@ RUN apk add --no-cache musl-dev
 RUN apk add --no-cache libressl-dev
 RUN apk add --no-cache pkgconfig
 RUN rustup target add armv7-unknown-linux-musleabihf
-RUN apt-get update && apt-get -y install binutils-arm-linux-gnueabihf
+RUN apk add --no-cache binutils-arm-none-eabi
 
 # Create a new empty shell project
 RUN USER=root cargo new --bin ice-party-watch
