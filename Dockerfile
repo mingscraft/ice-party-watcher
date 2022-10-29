@@ -4,6 +4,8 @@ FROM rust:1.64.0-alpine as builder
 RUN apk add --no-cache musl-dev
 RUN apk add --no-cache libressl-dev
 RUN apk add --no-cache pkgconfig
+RUN rustup target add armv7-unknown-linux-musleabihf
+RUN apt-get update && apt-get -y install binutils-arm-linux-gnueabihf
 
 # Create a new empty shell project
 RUN USER=root cargo new --bin ice-party-watch
@@ -26,13 +28,10 @@ COPY ./src ./src
 RUN apk add --update openssl && \
     rm -rf /var/cache/apk/*
 
-RUN cargo build --release
+RUN cargo build --release --target armv7-unknown-linux-musleabihf
 
-# The final base image
-FROM debian:buster-slim
-
-FROM scratch
+FROM --platform linux/arm scratch
 WORKDIR /ice-party-watch 
-COPY --from=builder /ice-party-watch/target/release/ice-party-watch /ice-party-watch/ice-party-watch
+COPY --from=builder /ice-party-watch/target/armv7-unknown-linux-musleabihf/release/ice-party-watch /ice-party-watch/ice-party-watch
 
 CMD ["./ice-party-watch"]
