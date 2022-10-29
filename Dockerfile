@@ -30,7 +30,7 @@ RUN apk add --update openssl && \
 
 RUN cargo build --release --target armv7-unknown-linux-musleabihf
 
-FROM --platform linux/arm scratch
+FROM scratch
 WORKDIR /ice-party-watch 
 COPY --from=builder /ice-party-watch/target/armv7-unknown-linux-musleabihf/release/ice-party-watch /ice-party-watch/ice-party-watch
 
