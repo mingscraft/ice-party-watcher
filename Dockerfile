@@ -6,6 +6,7 @@ RUN apk add --no-cache libressl-dev
 RUN apk add --no-cache pkgconfig
 RUN rustup target add armv7-unknown-linux-musleabihf
 RUN apk add --no-cache binutils-arm-none-eabi
+RUN cargo install cross
 
 # Create a new empty shell project
 RUN USER=root cargo new --bin ice-party-watch
@@ -14,9 +15,10 @@ WORKDIR /ice-party-watch
 # Copy our manifests
 COPY ./Cargo.toml ./Cargo.toml
 COPY ./Cargo.lock ./Cargo.lock
+COPY ./.cargo ./.cargo
 
 # Build only the dependencies to cache them
-RUN cargo build --release
+RUN CC=arm-linux-gnueabihf-gcc cargo build --release
 RUN rm ./src/*.rs
 RUN rm ./target/release/deps/ice_party_watch*
 
@@ -28,7 +30,7 @@ COPY ./src ./src
 RUN apk add --update openssl && \
     rm -rf /var/cache/apk/*
 
-RUN cargo build --release --target armv7-unknown-linux-musleabihf
+RUN CC=arm-linux-gnueabihf-gcc cargo build --release --target armv7-unknown-linux-musleabihf
 
 FROM scratch
 WORKDIR /ice-party-watch 
