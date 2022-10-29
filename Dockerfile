@@ -9,6 +9,13 @@ RUN apk add --no-cache binutils-arm-none-eabi gcc-arm-none-eabi
 RUN cargo install cross
 RUN ln -s /usr/bin/arm-linux-gnueabihf-gcc /usr/bin/arm-linux-musleabihf-gcc
 RUN ln -s /usr/bin/arm-linux-gnueabihf-musl-gcc /usr/bin/arm-linux-musleabihf-gcc
+RUN llvm_version=15
+RUN rustflags_self_contained="-Clink-self-contained=yes -Clinker=rust-lld"
+RUN qemu_arm="qemu-arm -L /usr/arm-linux-gnueabihf"
+RUN export CC_armv7_unknown_linux_musleabihf=clang-$llvm_version
+RUN export AR_armv7_unknown_linux_musleabihf=llvm-ar-$llvm_version
+RUN export CARGO_TARGET_ARMV7_UNKNOWN_LINUX_MUSLEABIHF_RUSTFLAGS="$rustflags_self_contained"
+RUN export CARGO_TARGET_ARMV7_UNKNOWN_LINUX_MUSLEABIHF_RUNNER="$qemu_arm"
 
 # Create a new empty shell project
 RUN USER=root cargo new --bin ice-party-watch
