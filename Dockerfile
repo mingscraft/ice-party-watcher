@@ -7,7 +7,7 @@ RUN apk add --no-cache pkgconfig
 RUN rustup target add armv7-unknown-linux-musleabihf
 RUN apk add --no-cache binutils-arm-none-eabi gcc-arm-none-eabi 
 RUN cargo install cross
-RUN ln -s /usr/bin/arm-linux-gnueabihf-gcc /usr/bin/arm-linux-musleabihf-gcc
+#RUN ln -s /usr/bin/arm-linux-gnueabihf-gcc /usr/bin/arm-linux-musleabihf-gcc
 RUN ln -s /usr/bin/arm-linux-gnueabihf-musl-gcc /usr/bin/arm-linux-musleabihf-gcc
 RUN llvm_version=15
 RUN rustflags_self_contained="-Clink-self-contained=yes -Clinker=rust-lld"
