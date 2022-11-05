@@ -32,6 +32,6 @@ RUN cargo build --release --target armv7-unknown-linux-gnueabihf
 
 FROM scratch
 WORKDIR /ice-party-watch 
-COPY --from=builder /ice-party-watch/target/armv7-unknown-linux-musleabihf/release/ice-party-watch /ice-party-watch/ice-party-watch
+COPY --from=builder /ice-party-watch/target/armv7-unknown-linux-gnueabihf/release/ice-party-watch /ice-party-watch/ice-party-watch
 
 CMD ["./ice-party-watch"]
