@@ -17,7 +17,7 @@ COPY ./Cargo.lock ./Cargo.lock
 COPY ./.cargo ./.cargo
 
 ENV CARGO_TARGET_ARMV7_UNKNOWN_LINUX_GNUEABIHF_LINKER=arm-linux-gnueabihf-gcc CC_armv7_unknown_Linux_gnueabihf=arm-linux-gnueabihf-gcc CXX_armv7_unknown_linux_gnueabihf=arm-linux-gnueabihf-g++
-RUN SET PKG_CONFIG_SYSROOT_DIR=/
+RUN PKG_CONFIG_SYSROOT_DIR=/
 
 # Build only the dependencies to cache them
 RUN cargo build --release --target armv7-unknown-linux-gnueabihf
