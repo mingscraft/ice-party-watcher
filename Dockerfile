@@ -24,8 +24,6 @@ RUN PKG_CONFIG_SYSROOT_DIR=/
 # Build only the dependencies to cache them
 RUN cargo build --release --target armv7-unknown-linux-gnueabihf
 RUN rm ./src/*.rs
-RUN rm ./target/release/deps/ice_party_watch*
-
 
 # Copy the source code
 COPY ./src ./src
