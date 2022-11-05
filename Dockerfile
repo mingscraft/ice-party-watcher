@@ -7,6 +7,10 @@ RUN apt install -y g++-arm-linux-gnueabihf libc6-dev-armhf-cross
 RUN rustup target add armv7-unknown-linux-gnueabihf 
 RUN rustup toolchain install stable-armv7-unknown-linux-gnueabihf 
 
+# install openssl
+RUN apk add --update openssl && \
+    rm -rf /var/cache/apk/*
+
 # Create a new empty shell project
 RUN USER=root cargo new --bin ice-party-watch
 WORKDIR /ice-party-watch
@@ -26,10 +30,6 @@ RUN rm ./target/release/deps/ice_party_watch*
 
 # Copy the source code
 COPY ./src ./src
-
-# install openssl
-RUN apk add --update openssl && \
-    rm -rf /var/cache/apk/*
 
 RUN cargo build --release --target armv7-unknown-linux-gnueabihf
 
