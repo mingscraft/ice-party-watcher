@@ -3,6 +3,8 @@ FROM rust:latest as builder
  
 RUN apt update; apt upgrade -y 
 RUN apt install -y g++-arm-linux-gnueabihf libc6-dev-armhf-cross
+RUN apt install pkg-config -y
+RUN apt-get install libssl-dev -y
  
 RUN rustup target add armv7-unknown-linux-gnueabihf 
 RUN rustup toolchain install stable-armv7-unknown-linux-gnueabihf 
