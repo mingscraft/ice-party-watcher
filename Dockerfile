@@ -36,6 +36,6 @@ RUN TARGET_CC=clang cargo build --release --target aarch64-unknown-linux-gnu
 
 FROM scratch
 WORKDIR /ice-party-watch 
-COPY --from=builder /ice-party-watch/target/armv7-unknown-linux-gnueabihf/release/ice-party-watch .
+COPY --from=builder /ice-party-watch/target/aarch64-unknown-linux-gnu/release/ice-party-watch .
 
 CMD ["./ice-party-watch"]
