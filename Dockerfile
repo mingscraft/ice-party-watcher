@@ -1,10 +1,10 @@
 # Rust as the base image
-FROM arm64v8/rust:latest as builder
+FROM rust:latest as builder
  
 RUN apt update; apt upgrade -y 
-RUN apt install -y g++-arm-linux-gnueabihf libc6-dev-armhf-cross
 RUN apt install pkg-config -y
 RUN apt-get install libssl-dev -y
+RUN apt install -y g++-aarch64-linux-gnu libc6-dev-arm64-cross
  
 RUN rustup target add aarch64-unknown-linux-gnu 
 RUN rustup toolchain install stable-aarch64-unknown-linux-gnu 
