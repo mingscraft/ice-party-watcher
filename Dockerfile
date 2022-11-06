@@ -34,8 +34,8 @@ COPY ./src ./src
 
 RUN TARGET_CC=clang cargo build --release --target aarch64-unknown-linux-gnu
 
-FROM scratch
+FROM rust:latest
 WORKDIR /ice-party-watch 
 COPY --from=builder /ice-party-watch/target/aarch64-unknown-linux-gnu/release/ice-party-watch .
 
-CMD ["./ice-party-watch"]
+CMD ["date"]
