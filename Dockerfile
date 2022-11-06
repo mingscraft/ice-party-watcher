@@ -25,14 +25,14 @@ ENV CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc \
 RUN PKG_CONFIG_SYSROOT_DIR=/
 
 # Build only the dependencies to cache them
-RUN cargo build --release --target aarch64-unknown-linux-gnu
+RUN TARGET_CC=clang cargo build --release --target aarch64-unknown-linux-gnu
 RUN rm ./src/*.rs
 
 
 # Copy the source code
 COPY ./src ./src
 
-RUN cargo build --release --target aarch64-unknown-linux-gnu
+RUN TARGET_CC=clang cargo build --release --target aarch64-unknown-linux-gnu
 
 FROM scratch
 WORKDIR /ice-party-watch 
