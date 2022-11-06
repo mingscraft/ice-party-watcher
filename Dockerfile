@@ -1,5 +1,5 @@
 # Rust as the base image
-FROM rust:latest as builder
+FROM arm64v8/rust:latest as builder
  
 RUN apt update; apt upgrade -y 
 RUN apt install -y g++-arm-linux-gnueabihf libc6-dev-armhf-cross
