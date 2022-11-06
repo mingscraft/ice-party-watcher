@@ -14,13 +14,13 @@ jobs:
           docker_layer_caching: true
       - run:
           name: Build Docker image
-          command: docker build -t $IMAGE_NAME:0.4.0 .
+          command: docker build -t $IMAGE_NAME:$CIRCLE_TAG .
 
       - run:
           name: Publish Docker image
           command: |
             docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
-            docker push $IMAGE_NAME:0.4.0 
+            docker push $IMAGE_NAME:$CIRCLE_TAG 
 
 workflows:
   version: 2
@@ -28,5 +28,6 @@ workflows:
     jobs:
       - build:
           filters:
-            branches:
-              only: main
+            tags:
+              only: 
+                - /^v.*/
