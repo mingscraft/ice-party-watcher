@@ -40,7 +40,7 @@
 # 
 # CMD ["/ice-party-watch"]
 
-FROM rust:1.61.0 as builder
+FROM rust:1.69.0 as builder
 
 WORKDIR /usr/src
 

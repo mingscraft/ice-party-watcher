@@ -2,6 +2,7 @@ use crate::DnsServerUpdator;
 use gcp_auth::AuthenticationManager;
 use reqwest::{header, Client};
 use secrecy::{ExposeSecret, Secret};
+use tracing::instrument;
 
 pub struct CloudDns {
     token: Secret<String>,
@@ -41,6 +42,7 @@ impl CloudDns {
 
 #[async_trait::async_trait]
 impl DnsServerUpdator for CloudDns {
+    #[instrument(skip(self))]
     async fn update_ip_in_dns(
         &self,
         ip: std::net::IpAddr,

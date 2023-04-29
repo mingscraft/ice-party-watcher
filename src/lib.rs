@@ -10,9 +10,11 @@
 use std::{net::IpAddr, time::Duration};
 use thiserror::Error;
 use tokio::time;
+use tracing::instrument;
 
 pub mod cloud_dns;
 pub mod public_ip_resolver;
+pub mod route53_dns;
 
 #[derive(Error, Debug)]
 pub enum DnsServerUpdatorError {
@@ -86,6 +88,7 @@ where
     }
 
     /// Run Watcher to keep ip up to date in DNS server
+    #[instrument(skip(self))]
     pub async fn run(&mut self) -> Result<(), IcePartyWatcherError> {
         let mut interval = time::interval(self.cadence);
         loop {
@@ -95,6 +98,7 @@ where
     }
 
     /// Sync IP with DNS Server
+    #[instrument(skip(self))]
     async fn sync_ip(&mut self) -> Result<(), IcePartyWatcherError> {
         let current_ip = self
             .ip_fetcher
@@ -118,6 +122,7 @@ where
     }
 
     /// Check update is needed
+    #[instrument(skip(self))]
     fn should_update(&self, new_ip: IpAddr) -> bool {
         if let Some(ip_in_dns) = self.ip_in_dns {
             new_ip != ip_in_dns
