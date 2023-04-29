@@ -18,3 +18,10 @@ RUST_LOG="ice_party_watch=info" DNS_TYPE=cloud_dns CRED_ID=<Cred ID> RECORD_NAME
 ```
 AWS_DEFAULT_REGION=<AWS region> AWS_ACCESS_KEY_ID=<AWS access key ID> AWS_SECRET_ACCESS_KEY=<AWS access key secret> ZONE_ID=<Route53 Zone ID> RUST_LOG="ice_party_watch=debug" DNS_TYPE=route53 CADENCE=20 RECORD_NAME=<DNS Record Name> TTL=600 cargo run
 ```
+
+# Build and publish docker image
+```
+docker build -t ice-party-watcher .
+docker tag ice-party-watcher ray888/ice-party-watcher:<tag>
+docker push ray888/ice-party-watcher:<tag>
+```
