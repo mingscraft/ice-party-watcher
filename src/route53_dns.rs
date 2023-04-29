@@ -40,7 +40,7 @@ impl DnsServerUpdator for Route53Dns {
             .action(ChangeAction::Upsert)
             .resource_record_set(
                 ResourceRecordSet::builder()
-                    .name(&self.record_name)
+                    .name(&format!("{name}", name = self.record_name))
                     .ttl(self.ttl)
                     .r#type(RrType::A)
                     .resource_records(record)
